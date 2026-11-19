@@ -184,7 +184,7 @@ html,body{width:100%;height:100%;overflow:hidden}
 .kb-cats{display:flex;gap:6px;flex-wrap:wrap}
 .kb-cats .kb-chip{border:1px solid var(--line);background:var(--panel-2);color:#8aa8da;border-radius:22px;padding:6px 11px;font-size:11px;cursor:pointer;font-weight:750}.kb-cats .kb-chip:hover{border-color:#43689d}.kb-cats .kb-chip.active{border-color:var(--cyan);background:#073242;color:#21e7ff}
 .kb-period{margin-left:auto;color:var(--muted);font-size:11px;letter-spacing:.05em}
-.kb-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kb-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
 .kb-tile{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .kb-tile small{display:block;color:var(--muted);font-size:10px;letter-spacing:.07em}
 .kb-tile b{display:block;font-size:28px;color:var(--text);margin-top:4px;font-variant-numeric:tabular-nums}
@@ -329,7 +329,7 @@ html,body{width:100%;height:100%;overflow:hidden}
 .close-sum{display:grid;gap:8px}
 .close-item{display:flex;justify-content:space-between;gap:12px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:12px;color:#9ab0d2}
 .close-item b{color:var(--text);text-align:right}
-.close-item b.bad{color:var(--red)}.close-item b.ok{color:var(--green)}
+.close-item b.bad{color:var(--red)}.close-item b.warn{color:#ffd84d}.close-item b.ok{color:var(--green)}
 .close-btn{width:100%;height:60px;margin-top:14px;border:1px solid #87424c;border-radius:12px;background:#2a1219;color:#ff7b84;font-size:16px;font-weight:1000;letter-spacing:.08em;cursor:pointer}
 .close-btn:hover{background:#3a1720;color:#fff}
 @media(max-width:1000px){.close-grid{grid-template-columns:1fr}}
@@ -399,6 +399,14 @@ a.history-btn:hover{text-decoration:none}
 .lk-name{color:#9ab0d2;font-size:11px;font-weight:750}
 .lk-name.on{color:#57f3a0}
 [hidden]{display:none!important}
+
+.kb-act{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:42px;padding:0 14px;border-radius:10px;border:1px solid;font-size:12px;font-weight:1000;letter-spacing:.06em;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+.kb-act small{font-size:9px;letter-spacing:.07em;opacity:.85}
+.kb-act.warn{color:#ffe680;background:linear-gradient(135deg,#3c3314,#1d1a10);border-color:#ffd84d}
+.kb-act.warn:hover{box-shadow:0 0 14px #ffd84d66;transform:translateY(-1px)}
+.kb-act.bad{color:#ffb3b8;background:linear-gradient(135deg,#4a1820,#22111a);border-color:#ff4f58}
+.kb-act.bad:hover{box-shadow:0 0 14px #ff4f5877;transform:translateY(-1px)}
+.kb-td-act{cursor:pointer}.kb-td-act:hover{background:#13253d}
 </style>
 </head>
 <body>
@@ -558,7 +566,7 @@ const DEFAULT_URL='https://docs.google.com/spreadsheets/d/1KeFMcbQKue_MSIQETNMRN
 const MONTHS=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
 const OP_ALIAS={'RIO DE LAS VUELTAS':['RDV','RIO DE LAS VUELTAS'],'TRANSPORTE LEVON':['LEVON','TL'],'SPECIAL TRUCK':['SPECIAL TRUCK','ST'],'TRANSPORTE ONLINE':['ONLINE','TOL'],'EXPRESS BEER':['EXPRESS BEER','EB']};
 const OP_SHORT=[['RIO DE LAS VUELTAS','RDV'],['RDV','RDV'],['LEVON','TL'],['SPECIAL TRUCK','ST'],['ONLINE','TOL'],['EXPRESS BEER','EB']];
-const STATUS={ok:'✓ EN RANGO',bad:'✕ ALERTA',na:'– SIN DATO'};
+const STATUS={ok:'✓ EN OBJETIVO',warn:'▲ FUERA DE OBJETIVO',bad:'✕ FUERA DE DISPARADOR',na:'– SIN DATO'};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state={kpis:[],snap:null,op:'',cat:'TODAS',history:[]};
@@ -582,8 +590,8 @@ function isPct(k){return [k.target,k.trigger].some(v=>num(v)&&v>0&&v<1)||(num(k.
 function fmtV(k,v){if(!num(v))return '—';if(isPct(k))return (v*100).toLocaleString('es-AR',{maximumFractionDigits:1})+'%';return v.toLocaleString('es-AR',{maximumFractionDigits:2})}
 function current(k){if(num(k.monthly))return{v:k.monthly,src:'MENSUAL'};if(num(k.weekly))return{v:k.weekly,src:k.week||'SEMANAL'};if(num(k.daily))return{v:k.daily,src:'DIARIO '+(k.dailyDate||'')};const s=(k.series||[]).filter(p=>num(p.v));if(s.length)return{v:s[s.length-1].v,src:'DIARIO '+s[s.length-1].d};return{v:null,src:''}}
 function limit(k){return num(k.trigger)?k.trigger:(num(k.target)?k.target:null)}
-function status(k){const c=current(k).v,l=limit(k);if(!num(c)||l===null)return 'na';return (lowerIsBetter(k)?c>l:c<l)?'bad':'ok'}
-function statusLabel(k,s){if(s!=='bad')return STATUS[s];return lowerIsBetter(k)?'✕ SOBRE DISPARADOR':'✕ BAJO DISPARADOR'}
+function status(k){const c=current(k).v;if(!num(c)||(!num(k.target)&&!num(k.trigger)))return 'na';const low=lowerIsBetter(k);if(num(k.trigger)&&(low?c>k.trigger:c<k.trigger))return 'bad';if(num(k.target)&&(low?c>k.target:c<k.target))return 'warn';return 'ok'}
+function statusLabel(k,s){const low=lowerIsBetter(k);if(s==='warn')return low?'▲ SOBRE EL OBJETIVO':'▲ BAJO EL OBJETIVO';if(s==='bad')return low?'✕ SOBRE EL DISPARADOR':'✕ BAJO EL DISPARADOR';return STATUS[s]}
 function shortOp(raw){const u=String(raw).toUpperCase();const f=OP_SHORT.find(([k])=>u.includes(k));return f?f[1]:String(raw)}
 function selectedOp(){try{const c=JSON.parse(localStorage.getItem('teamRoomConfig')||'{}');if(c.operator)return c.operator}catch(e){}return document.querySelector('#operators .active')?.textContent.trim()||''}
 function matchOp(raw,sel){if(!sel)return true;const u=String(raw).toUpperCase();return (OP_ALIAS[sel]||[sel]).some(x=>u.includes(x))}
@@ -673,14 +681,15 @@ function render(){
  const list=filtered(),st=list.map(status),cnt=s=>st.filter(x=>x===s).length,measured=list.length-cnt('na');
  const pct=measured?Math.round(cnt('ok')/measured*100):null;
  $('kbSummary').innerHTML=[
-  ['% EN VERDE',pct===null?'—':pct+'%','',''],
-  ['EN VERDE',cnt('ok'),'ok','✓'],['EN ROJO',cnt('bad'),'bad','✕'],['SIN DATO',cnt('na'),'na','–']
+  ['% EN OBJETIVO',pct===null?'—':pct+'%','',''],
+  ['EN OBJETIVO',cnt('ok'),'ok','✓'],['EN AMARILLO · 5 POR QUÉ',cnt('warn'),'warn','▲'],['EN ROJO · ADF',cnt('bad'),'bad','✕'],['SIN DATO',cnt('na'),'na','–']
  ].map(([l,v,c,t])=>`<div class="kb-tile"><small>${l}</small><b>${v}</b>${c?`<span class="kb-tag ${c}">${t} ${list.length?Math.round(v/list.length*100):0}% del total</span>`:`<span class="kb-tag na">${measured} de ${list.length} medidos</span>`}</div>`).join('');
- window.__kpiSummary={red:cnt('bad'),green:cnt('ok'),na:cnt('na'),redNames:list.filter(k=>status(k)==='bad').map(k=>k.name)};
+ window.__kpiSummary={red:cnt('bad'),yellow:cnt('warn'),green:cnt('ok'),na:cnt('na'),redNames:list.filter(k=>status(k)==='bad').map(k=>k.name),yellowNames:list.filter(k=>status(k)==='warn').map(k=>k.name)};state.shown=list;
  $('kbMain').innerHTML=!list.length?'<div class="dash-empty">No hay KPIs para el filtro elegido. Presioná ACTUALIZAR KPIs para consultar el Excel.</div>':(state.op?cards(list):matrix(list));
  hist();
 }
-function cards(list){return '<div class="kb-grid">'+list.map((k,i)=>{const s=status(k),c=current(k);return `<div class="kb-kpi ${s}"><div class="kb-kpi-top"><div><div class="kb-kpi-cat">${esc(k.category)} · ${esc(shortOp(k.operator))}</div><div class="kb-kpi-name">${esc(k.name)}</div></div><span class="kb-tag ${s}">${statusLabel(k,s)}</span></div><div class="kb-kpi-val"><b>${fmtV(k,c.v)}</b><small>${esc(c.src)}</small></div><div class="kb-kpi-meta"><span>Objetivo <b>${fmtV(k,k.target)}</b></span><span>Disparador <b>${fmtV(k,limit(k))}</b></span><span>${lowerIsBetter(k)?'↓ menor es mejor':'↑ mayor es mejor'}</span></div>${spark(k,i)}<div class="kb-periods"><div><small>DIARIO ${esc(k.dailyDate||'')}</small>${fmtV(k,k.daily)}</div><div><small>${esc(k.week||'SEMANAL')}</small>${fmtV(k,k.weekly)}</div><div><small>MENSUAL</small>${fmtV(k,k.monthly)}</div></div></div>`}).join('')+'</div>'}
+function actBtn(k,s,i){if(s==='warn')return `<button type="button" class="kb-act warn" data-act="why5" data-i="${i}"><span>🔍 HACER 5 POR QUÉ</span><small>IR A GESTIÓN →</small></button>`;if(s==='bad')return `<button type="button" class="kb-act bad" data-act="adf" data-i="${i}"><span>⚠ HACER ADF</span><small>IR A GESTIÓN →</small></button>`;return ''}
+function cards(list){return '<div class="kb-grid">'+list.map((k,i)=>{const s=status(k),c=current(k);return `<div class="kb-kpi ${s}"><div class="kb-kpi-top"><div><div class="kb-kpi-cat">${esc(k.category)} · ${esc(shortOp(k.operator))}</div><div class="kb-kpi-name">${esc(k.name)}</div></div><span class="kb-tag ${s}">${statusLabel(k,s)}</span></div><div class="kb-kpi-val"><b>${fmtV(k,c.v)}</b><small>${esc(c.src)}</small></div><div class="kb-kpi-meta"><span>Objetivo <b>${fmtV(k,k.target)}</b></span><span>Disparador <b>${fmtV(k,limit(k))}</b></span><span>${lowerIsBetter(k)?'↓ menor es mejor':'↑ mayor es mejor'}</span></div>${actBtn(k,s,i)}${spark(k,i)}<div class="kb-periods"><div><small>DIARIO ${esc(k.dailyDate||'')}</small>${fmtV(k,k.daily)}</div><div><small>${esc(k.week||'SEMANAL')}</small>${fmtV(k,k.weekly)}</div><div><small>MENSUAL</small>${fmtV(k,k.monthly)}</div></div></div>`}).join('')+'</div>'}
 function spark(k,i){
  const pts=(k.series||[]).map((p,ix)=>({...p,ix})).filter(p=>num(p.v));
  if(pts.length<2)return '<div class="kb-spark-empty">Evolución diaria: sin datos suficientes</div>';
@@ -694,7 +703,7 @@ function spark(k,i){
  return `<div class="kb-spark" data-pts="${data}" data-name="${esc(k.name)}"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Evolución diaria de ${esc(k.name)}">${tgt}<path d="${d}" fill="none" stroke="#16dcf7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="${x(last.ix)}" cy="${y(last.v)}" r="4" fill="#16dcf7" stroke="#101b2e" stroke-width="2" vector-effect="non-scaling-stroke"/><circle class="kb-hover" r="4" fill="#fff" stroke="#16dcf7" stroke-width="2" style="display:none" vector-effect="non-scaling-stroke"/></svg></div>`}
 function matrix(list){
  const ops=[...new Set(list.map(k=>k.operator))],names=[];list.forEach(k=>{if(!names.find(n=>n.name===k.name))names.push(k)});
- return `<div class="kb-matrix-wrap"><table class="kb-matrix"><thead><tr><th>INDICADOR</th><th>OBJETIVO</th>${ops.map(o=>`<th>${esc(shortOp(o))}</th>`).join('')}</tr></thead><tbody>${names.map(n=>`<tr><td><small>${esc(n.category)}</small><b>${esc(n.name)}</b></td><td>${fmtV(n,n.target)}</td>${ops.map(o=>{const k=list.find(x=>x.operator===o&&x.name===n.name);if(!k)return '<td>—</td>';const s=status(k);return `<td title="${esc(shortOp(o)+' · '+k.name+' · '+STATUS[s])}"><span class="kb-cell"><i class="kb-dot ${s}"></i>${fmtV(k,current(k).v)}</span></td>`}).join('')}</tr>`).join('')}</tbody></table></div><div class="kb-legend">${['ok','bad','na'].map(s=>`<span class="kb-tag ${s}">${STATUS[s]}</span>`).join('')}</div>`}
+ return `<div class="kb-matrix-wrap"><table class="kb-matrix"><thead><tr><th>INDICADOR</th><th>OBJETIVO</th>${ops.map(o=>`<th>${esc(shortOp(o))}</th>`).join('')}</tr></thead><tbody>${names.map(n=>`<tr><td><small>${esc(n.category)}</small><b>${esc(n.name)}</b></td><td>${fmtV(n,n.target)}</td>${ops.map(o=>{const k=list.find(x=>x.operator===o&&x.name===n.name);if(!k)return '<td>—</td>';const s=status(k);const ix=state.shown.indexOf(k);const act=s==='warn'?'why5':s==='bad'?'adf':'';return `<td title="${esc(shortOp(o)+' · '+k.name+' · '+statusLabel(k,s)+(act?' · clic para '+(act==='adf'?'hacer el ADF':'hacer el 5 por qué'):''))}" ${act?`class="kb-td-act" data-act="${act}" data-i="${ix}"`:''}><span class="kb-cell"><i class="kb-dot ${s}"></i>${fmtV(k,current(k).v)}</span></td>`}).join('')}</tr>`).join('')}</tbody></table></div><div class="kb-legend">${['ok','warn','bad','na'].map(s=>`<span class="kb-tag ${s}">${STATUS[s]}${s==='warn'?' · 5 POR QUÉ':s==='bad'?' · ADF':''}</span>`).join('')}</div>`}
 function bars(sel){
  const ops=[...new Set(state.kpis.map(k=>k.operator))];
  const rows=ops.map(o=>{const l=state.kpis.filter(k=>k.operator===o&&(state.cat==='TODAS'||k.category===state.cat)),st=l.map(status),m=st.filter(s=>s!=='na').length,ok=st.filter(s=>s==='ok').length;return{o,m,ok,t:l.length,p:m?ok/m:null}}).sort((a,b)=>(b.p??-1)-(a.p??-1));
@@ -703,6 +712,21 @@ function hist(){
  const h=state.history;
  $('kbHist').innerHTML=h.length?h.slice(0,12).map(s=>`<div class="kb-hist-row ${state.snap&&s.id===state.snap.id?'current':''}"><span><b>${new Date(s.ts).toLocaleString('es-AR')}</b></span><span>${esc(s.source)} · hoja ${esc(s.sheet||'')} · ${(s.kpis||[]).length} indicadores</span>${state.snap&&s.id===state.snap.id?'<span class="kb-tag ok">EN USO</span>':`<button class="history-btn ghost" type="button" data-load="${s.id}">VER ESTA VERSIÓN</button>`}<span></span></div>`).join(''):'<div class="dash-empty">Todavía no hay actualizaciones guardadas en la base.</div>'}
 
+
+/* ---------- Ir a Gestion con el KPI precargado ---------- */
+const normTxt=t=>String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9%>]+/g,' ').trim();
+const KEYS=['EXCESOS','CINTUR','ADHERENCIA AL RADIO','NOTIFICACI','DETRACTOR','REFACTUR','CHECKLIST','RALENT'];
+function goGestion(k,tool){
+ if(typeof window.showPage==='function')window.showPage('gestion');
+ document.querySelector('#gestion .gestion-choice[data-tool="'+tool+'"]')?.click();
+ const form=document.getElementById(tool==='adf'?'form-adf':'form-why5');if(!form)return;
+ const sel=form.querySelector('.gestion-kpi-select');
+ if(sel){const n=normTxt(k.name),key=KEYS.find(x=>n.includes(x));let opt=[...sel.options].find(o=>normTxt(o.value||o.textContent)===n)||(key&&[...sel.options].find(o=>normTxt(o.value||o.textContent).includes(key)))||[...sel.options].find(o=>/PERSONALIZADO/i.test(o.value||o.textContent));if(opt){sel.value=opt.value;sel.dispatchEvent(new Event('change',{bubbles:true}))}}
+ const val=form.querySelector('[name="Valor actual del KPI"]');if(val)val.value=fmtV(k,current(k).v)+' ('+current(k).src+' · '+shortOp(k.operator)+')';
+ const tg=form.querySelector('[name="Target KPI"]');if(tg&&num(k.target))tg.value=fmtV(k,k.target);
+ setTimeout(()=>form.scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
+$('kbMain').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const k=state.shown&&state.shown[+b.dataset.i];if(k)goGestion(k,b.dataset.act)});
 /* ---------- Tooltip de las lineas ---------- */
 const tip=$('kbTip');
 document.addEventListener('mousemove',e=>{const sp=e.target.closest&&e.target.closest('.kb-spark');document.querySelectorAll('.kb-spark .kb-hover').forEach(c=>{if(!sp||!sp.contains(c))c.style.display='none'});if(!sp){tip.style.display='none';return}
@@ -807,7 +831,7 @@ function renderActions(){const list=[...rowsOf('whyActions','5 POR QUÉ'),...row
  $('actList').innerHTML=list.length?list.map(x=>`<div class="act-row"><span class="act-tool">${esc(x.tool)}</span><span><b>${esc(x.action||'—')}</b><small>${esc(x.topic||'')}</small></span><span>${esc(x.owner||'Sin responsable')}<small>RESPONSABLE</small></span><span>${esc(x.due||'—')}<small>FECHA FIN</small></span><span><i class="act-st ${/curso/i.test(x.status)?'prog':'open'}">${esc(x.status||'Abierto')}</i></span></div>`).join(''):'<div class="dash-empty">No hay acciones abiertas cargadas hoy en las herramientas de gestión. Revisá el Action Log del equipo.</div>'}
 /* Cierre */
 function renderClose(){const c=cfg(),k=window.__kpiSummary||{},f=window.__fleetSummary||{},pend=[...rowsOf('whyActions','5'),...rowsOf('adfActions','ADF',true)].filter(x=>!/resuelt/i.test(x.status||'')).length,alert=localStorage.getItem(todayKey());
- const items=[['Operador',c.operator||'—'],['Turno',c.day||'—'],['Líder',c.leader||'—'],['Focos del día',(c.focus||[]).join(', ')||'—'],['Alerta de tránsito',(window.__autoAlert&&window.__autoAlert.nivel==='alto')||(alert&&alert!=='__none__')?'⚠ '+((window.__autoAlert&&window.__autoAlert.nivel==='alto')?'Resumen automático con alertas':'Cargada por el líder'):(window.__autoAlert?'Sin novedades importantes':'Sin novedades'),(window.__autoAlert&&window.__autoAlert.nivel==='alto')||(alert&&alert!=='__none__')?'bad':'ok'],['Camiones disponibles',f.total!==undefined?f.available+' de '+f.total:'—',f.total!==undefined&&!f.available?'bad':'ok'],['Indicadores en rojo',k.red!==undefined?String(k.red)+(k.redNames&&k.redNames.length?' · '+[...new Set(k.redNames)].join(', '):''):'—',k.red?'bad':'ok'],['Acciones pendientes cargadas',String(pend),pend?'bad':'ok']];
+ const items=[['Operador',c.operator||'—'],['Turno',c.day||'—'],['Líder',c.leader||'—'],['Focos del día',(c.focus||[]).join(', ')||'—'],['Alerta de tránsito',(window.__autoAlert&&window.__autoAlert.nivel==='alto')||(alert&&alert!=='__none__')?'⚠ '+((window.__autoAlert&&window.__autoAlert.nivel==='alto')?'Resumen automático con alertas':'Cargada por el líder'):(window.__autoAlert?'Sin novedades importantes':'Sin novedades'),(window.__autoAlert&&window.__autoAlert.nivel==='alto')||(alert&&alert!=='__none__')?'bad':'ok'],['Camiones disponibles',f.total!==undefined?f.available+' de '+f.total:'—',f.total!==undefined&&!f.available?'bad':'ok'],['Indicadores en amarillo (5 por qué)',k.yellow!==undefined?String(k.yellow)+(k.yellowNames&&k.yellowNames.length?' · '+[...new Set(k.yellowNames)].join(', '):''):'—',k.yellow?'warn':'ok'],['Indicadores en rojo (ADF)',k.red!==undefined?String(k.red)+(k.redNames&&k.redNames.length?' · '+[...new Set(k.redNames)].join(', '):''):'—',k.red?'bad':'ok'],['Acciones pendientes cargadas',String(pend),pend?'bad':'ok']];
  $('closeSum').innerHTML=items.map(([l,v,cl])=>`<div class="close-item"><span>${l}</span><b class="${cl||''}">${esc(v)}</b></div>`).join('')}
 setInterval(()=>{if(current()==='cierre')$('closeTime').textContent=$('timer')?.textContent||'00:00:00'},500);
 $('closeFinish').onclick=()=>{$('finish')?.click()};

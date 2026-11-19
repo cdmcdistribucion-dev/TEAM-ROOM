@@ -420,9 +420,9 @@ a.history-btn:hover{text-decoration:none}
 <div class="card"><div class="card-head"><div class="title"><i class="icon">▦</i>REVISIÓN DE INDICADORES</div><div class="dash-toolbar"><span class="badge" id="dashOperator">SIN OPERADOR</span></div></div></div>
 <div class="card" id="kpiBoard"><div class="card-head"><div class="title"><i class="icon">◉</i>TABLERO DE KPIs</div><div class="dash-toolbar"><span class="kb-db" id="kbDbStatus"><i></i>BASE: INICIANDO…</span><button class="history-btn ghost" id="kbConfigBtn" type="button">⚙ LINK PLANILLA</button><button class="history-btn manual" id="kbRefresh" type="button"><span class="kb-spin">⟳</span> <span id="kbBtnLabel">ACTUALIZAR KPIs</span></button><input id="kbFile" type="file" accept=".xlsx,.xls,.xlsm,.json" hidden></div></div><div class="card-body">
 <div class="kb-config" id="kbConfig" hidden>
-<label for="kbUrl">LINK DE LA PLANILLA DE KPIs (GOOGLE SHEETS)</label>
-<div class="kb-config-row"><input id="kbUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/…"><button class="history-btn manual" id="kbSaveUrl" type="button">GUARDAR LINK</button><button class="history-btn ghost" id="kbOpenUrl" type="button">ABRIR ↗</button><button class="history-btn ghost" id="kbManual" type="button">⇪ CARGAR ARCHIVO</button></div><span hidden><button id="kbLink"></button><span id="kbLinkName"></span><button id="kbUnlink"></button></span>
-<div class="kb-help">El tablero lee la planilla de Google Sheets en el momento: se actualiza solo al abrir la app, al entrar a esta pestaña (si pasaron más de 15 minutos) y con <b>ACTUALIZAR KPIs</b>. La planilla tiene que estar compartida como <b>Cualquier persona con el enlace · Lector</b> y mantener el formato: una hoja por mes, operador en la columna A, indicador en la C, objetivo en la F y disparador en la H.</div>
+<label for="kbUrl">LINK DE LA APLICACIÓN WEB DE APPS SCRIPT (…/exec) O DE LA PLANILLA DE GOOGLE SHEETS</label>
+<div class="kb-config-row"><input id="kbUrl" type="url" placeholder="https://script.google.com/macros/s/…/exec"><button class="history-btn manual" id="kbSaveUrl" type="button">GUARDAR LINK</button><button class="history-btn ghost" id="kbOpenUrl" type="button">ABRIR ↗</button><button class="history-btn ghost" id="kbManual" type="button">⇪ CARGAR ARCHIVO</button></div><span hidden><button id="kbLink"></button><span id="kbLinkName"></span><button id="kbUnlink"></button></span>
+<div class="kb-help">El tablero lee la planilla de Google Sheets en el momento: se actualiza solo al abrir la app, al entrar a esta pestaña (si pasaron más de 15 minutos) y con <b>ACTUALIZAR KPIs</b>. Usá el link de la aplicación web de Apps Script (la planilla puede quedar privada). La planilla tiene que mantener el formato: una hoja por mes, operador en la columna A, indicador en la C, objetivo en la F y disparador en la H.</div>
 </div>
 <div class="kb-msg" id="kbMsg"></div>
 <div class="kb-filters"><span class="kb-oplabel">OPERADOR LOGÍSTICO</span><div class="kb-seg" id="kbOps"></div><div class="kb-cats" id="kbCats"></div><span class="kb-period" id="kbPeriod"></span></div>
@@ -593,17 +593,25 @@ function parseWorkbook(wb){
  const mName=MONTHS[new Date().getMonth()];
  const sheetName=wb.SheetNames.find(n=>n.trim().toUpperCase()===mName)||wb.SheetNames.find(n=>n.toUpperCase().includes(mName))||wb.SheetNames[wb.SheetNames.length-1];
  const rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:''});
- let hIdx=3;for(let i=0;i<Math.min(rows.length,15);i++){if((rows[i]||[]).some(v=>v instanceof Date)||(rows[i]||[]).some(v=>/^SEM/i.test(String(v)))){hIdx=i;break}}
+ const isDay=v=>v instanceof Date||/^\s*\d{1,2}[\/\-.]\d{1,2}([\/\-.]\d{2,4})?\s*$/.test(String(v));
+ let hIdx=-1;for(let i=0;i<Math.min(rows.length,20);i++){const rr=rows[i]||[];if(rr.some(v=>/^(OBJETIVO|INDICADOR|GATILLO)$/i.test(String(v).trim()))){hIdx=i;break}}
+ if(hIdx<0){let best=0;hIdx=3;for(let i=0;i<Math.min(rows.length,20);i++){const sc=(rows[i]||[]).filter(isDay).length;if(sc>best){best=sc;hIdx=i}}}
  const head=rows[hIdx]||[];
- const dateCols=head.map((v,j)=>v instanceof Date?j:-1).filter(j=>j>=0);
+ const dkey=v=>{if(v instanceof Date)return v.getMonth()*100+v.getDate();const p=String(v).trim().split(/[\/\-.]/);return (+p[1]-1)*100+(+p[0])};
+ const dateCols=[];let lastKey=-1;head.forEach((v,j)=>{if(j>7&&isDay(v)){const k=dkey(v);if(k>lastKey){dateCols.push(j);lastKey=k}}});
+ const dayLabel=v=>v instanceof Date?v.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}):String(v).trim().split(/[\/\-.]/).slice(0,2).map(x=>x.padStart(2,'0')).join('/');
  const weekCols=head.map((v,j)=>/^SEM/i.test(String(v).trim())?j:-1).filter(j=>j>=0);
- const monthCol=head.findIndex(v=>/MENSUAL|ACUMULADO|TOTAL MES/i.test(String(v).trim()));
+ const monthCols=head.map((v,j)=>/^MTD$|MENSUAL|ACUMULADO|TOTAL MES/i.test(String(v).trim())?j:-1).filter(j=>j>=0);
+ const weekDays=weekCols.map((w,k)=>{const prev=k?weekCols[k-1]:-1;return dateCols.filter(j=>j>prev&&j<w)});
  const out=[];let cur='';
  for(let i=hIdx+1;i<rows.length;i++){const r=rows[i];if(!r)continue;if(r[0])cur=String(r[0]).trim();if(!r[2]||!cur)continue;
-  const series=dateCols.map(j=>({d:head[j].toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}),v:num(r[j])?r[j]:null}));
+  const series=dateCols.map(j=>({d:dayLabel(head[j]),v:num(r[j])?r[j]:null}));
   const lastD=[...series].reverse().find(p=>num(p.v));
-  let weekly=null,week='';weekCols.forEach(j=>{if(num(r[j])){weekly=r[j];week=String(head[j]).trim()}});
-  out.push({operator:cur,category:String(r[1]||'').trim(),name:String(r[2]).trim(),target:r[5],trigger:r[7],daily:lastD?lastD.v:null,dailyDate:lastD?lastD.d:'',weekly,week,monthly:(monthCol>=0&&num(r[monthCol]))?r[monthCol]:num(r[43])?r[43]:(num(r[8])?r[8]:null),series})}
+  let weekly=null,week='';const lastDayCol=[...dateCols].reverse().find(j=>num(r[j]));
+  if(lastDayCol!==undefined){const k=weekCols.findIndex((w,ix)=>weekDays[ix].includes(lastDayCol));if(k>=0&&num(r[weekCols[k]])){weekly=r[weekCols[k]];week=String(head[weekCols[k]]).trim()}else if(k>0){for(let x=k-1;x>=0;x--){if(num(r[weekCols[x]])){weekly=r[weekCols[x]];week=String(head[weekCols[x]]).trim();break}}}}
+  else weekCols.forEach(j=>{if(num(r[j])){weekly=r[j];week=String(head[j]).trim()}});
+  const mtdCol=monthCols.find(j=>num(r[j]));
+  out.push({operator:cur,category:String(r[1]||'').trim(),name:String(r[2]).trim(),target:r[5],trigger:r[7],daily:lastD?lastD.v:null,dailyDate:lastD?lastD.d:'',weekly,week,monthly:monthCols.length?(mtdCol!==undefined?r[mtdCol]:null):(num(r[43])?r[43]:(num(r[8])?r[8]:null)),series})}
  if(!out.length)throw new Error('No se encontraron KPIs en la hoja "'+sheetName+'". Revisá que el Excel mantenga el formato (operador en col. A, indicador en col. C, objetivo en col. F).');
  return{kpis:out,sheet:sheetName}
 }
@@ -630,10 +638,10 @@ async function refresh(){
   const res=await fetch(url,{cache:'no-store',credentials:(sameOrigin||isSP)?'include':'omit',redirect:'follow'});
   if(!res.ok)throw Object.assign(new Error('El servidor respondió '+res.status+(res.status===401||res.status===403?' (sin permiso / sesión no iniciada)':'')+'.'),{code:'http'});
   const data=bufferToData(await res.arrayBuffer());
-  await save(data,/docs\.google\.com/i.test(url)?'Google Sheets':'Link Excel');
+  await save(data,/docs\.google\.com|script\.google/i.test(url)?'Google Sheets':'Link Excel');
  }catch(e){
   const cors=e instanceof TypeError;
-  msg('err',(cors?'No se pudo leer la planilla de Google. Revisá la conexión a internet y que esté compartida como <b>Cualquier persona con el enlace · Lector</b>.':e.message)+' <button class="history-btn ghost" type="button" onclick="document.getElementById(\'kbFile\').click()">⇪ CARGAR ARCHIVO</button>');
+  msg('err',(cors?'Google no permite leer la planilla directo desde la app. Pegá en <b>⚙ LINK PLANILLA</b> el link de la <b>aplicación web de Apps Script</b> (termina en /exec).':e.message)+' <button class="history-btn ghost" type="button" onclick="document.getElementById(\'kbFile\').click()">⇪ CARGAR ARCHIVO</button>');
  }finally{btn.classList.remove('loading')}
 }
 async function save(data,source){

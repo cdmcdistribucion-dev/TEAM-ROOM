@@ -1,9 +1,7 @@
 {
-  "fecha": "2026-11-18",
-  "actualizado": "2026-11-18T22:35:00-03:00",
+  "fecha": "2026-11-19",
+  "actualizado": "2026-11-19T04:47:00-03:00",
   "nivel": "sin_novedades",
-  "resumen": "Sin cortes programados ni accidentes graves informados en CABA para el inicio de la jornada. Hoy hubo marcha de médicos residentes y jubilados en el centro (Callao → Obelisco → Plaza de Mayo), ya finalizada.",
-  "items": [
-    {"titulo": "Marcha de residentes de hospitales públicos hacia el Ministerio de Salud porteño", "zona": "Centro / Plaza de Mayo", "tipo": "marcha", "fuente": "Ámbito", "url": "https://www.ambito.com/informacion-general/paro-residentes-hospitales-publicos-reclaman-aumentos-salariales-y-marcharan-al-ministerio-salud-n6346611"}
-  ]
+  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. No hay marchas ni piquetes anunciados para hoy; circular con precaución en accesos con tránsito lento habitual (Gral. Paz, Riccheri, Dellepiane, Acceso Oeste, Panamericana).",
+  "items": []
 }

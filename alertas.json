@@ -1,7 +1,10 @@
 {
-  "fecha": "2026-11-19",
-  "actualizado": "2026-11-19T04:47:00-03:00",
-  "nivel": "sin_novedades",
-  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. No hay marchas ni piquetes anunciados para hoy.",
-  "items": []
+  "fecha": "2026-11-20",
+  "actualizado": "2026-11-20T04:50:00-03:00",
+  "nivel": "medio",
+  "resumen": "Sin cortes, accidentes ni piquetes relevantes informados en CABA para esta mañana. Se esperan chaparrones aislados por la mañana y tormentas por la tarde (hasta 70 %), con posibles anegamientos; además, viernes de inicio de fin de semana largo con mayor tránsito de salida en autopistas por la tarde.",
+  "items": [
+    {"titulo": "Viernes con tormentas en el AMBA: chaparrones por la mañana y tormentas por la tarde", "zona": "CABA y conurbano", "tipo": "clima", "fuente": "Infobae", "url": "https://www.infobae.com/sociedad/2026/11/20/viernes-con-tormentas-en-el-amba-como-estara-el-tiempo-durante-el-fin-de-semana-largo/"},
+    {"titulo": "Tormentas fuertes y hasta 70 % de probabilidad de lluvia en el AMBA el viernes del fin de semana largo", "zona": "AMBA", "tipo": "clima", "fuente": "Panorama Directo", "url": "https://panoramadirecto.com/tormentas-fuertes-y-hasta-70-de-probabilidad-de-lluvia-en-el-amba-a-que-hora-se-complica-el-viernes-del-fin-de-semana-largo/"}
+  ]
 }

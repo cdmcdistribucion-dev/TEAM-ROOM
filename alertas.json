@@ -1,10 +1,10 @@
 {
-  "fecha": "2026-11-20",
-  "actualizado": "2026-11-20T04:50:00-03:00",
-  "nivel": "medio",
-  "resumen": "Sin cortes, accidentes ni piquetes relevantes informados en CABA para esta mañana. Se esperan chaparrones aislados por la mañana y tormentas por la tarde (hasta 70 %), con posibles anegamientos; además, viernes de inicio de fin de semana largo con mayor tránsito de salida en autopistas por la tarde.",
+  "fecha": "2026-11-21",
+  "actualizado": "2026-11-21T04:46:00-03:00",
+  "nivel": "alto",
+  "resumen": "Corte total de la Autopista Illia hacia Provincia, parte de Av. Cantilo y del Paseo del Bajo sentido norte (altura Retiro) por obras del Anillo La Pampa hasta las 8; de 8 a 14 quedan 2 de 4 carriles en el sector La Pampa y desde las 22 vuelve el corte total. Sin lluvias ni alertas previstas para CABA esta mañana.",
   "items": [
-    {"titulo": "Viernes con tormentas en el AMBA: chaparrones por la mañana y tormentas por la tarde", "zona": "CABA y conurbano", "tipo": "clima", "fuente": "Infobae", "url": "https://www.infobae.com/sociedad/2026/11/20/viernes-con-tormentas-en-el-amba-como-estara-el-tiempo-durante-el-fin-de-semana-largo/"},
-    {"titulo": "Tormentas fuertes y hasta 70 % de probabilidad de lluvia en el AMBA el viernes del fin de semana largo", "zona": "AMBA", "tipo": "clima", "fuente": "Panorama Directo", "url": "https://panoramadirecto.com/tormentas-fuertes-y-hasta-70-de-probabilidad-de-lluvia-en-el-amba-a-que-hora-se-complica-el-viernes-del-fin-de-semana-largo/"}
+    {"titulo": "La Illia y Cantilo tendrán cortes por obras del Anillo La Pampa (corte total hasta las 8 del sábado; parcial de 8 a 14)", "zona": "Autopista Illia, Av. Cantilo y Paseo del Bajo (Retiro – Palermo)", "tipo": "obra", "fuente": "Medios AZ", "url": "https://www.mediosaz.com/articles/la-illia-y-cantilo-tendran-cortes-por-obras-del-anillo-la-pampa"},
+    {"titulo": "Clima en CABA: sábado 21 sin lluvias previstas y sin alertas vigentes", "zona": "CABA", "tipo": "clima", "fuente": "Cadena 3", "url": "https://www.cadena3.com/noticia/clima/clima-en-caba-como-estara-el-tiempo-este-sabado-21-de-noviembre_615316"}
   ]
 }

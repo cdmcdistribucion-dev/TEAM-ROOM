@@ -1,11 +1,9 @@
 {
-  "fecha": "2026-11-23",
-  "actualizado": "2026-11-23T04:55:00-03:00",
-  "nivel": "alto",
-  "resumen": "Hasta las 12 sigue el corte total de la Autopista Illia hacia Provincia, de un tramo de Av. Cantilo y del Paseo del Bajo en Retiro (sentido norte) por obras del Anillo La Pampa; camiones desviar por Costanera, Güiraldes y Cantilo (autos por Figueroa Alcorta o Libertador). Desde las 12 se libera todo; hoy es feriado, con menos tránsito y colectivos con frecuencia de domingo.",
+  "fecha": "2026-11-24",
+  "actualizado": "2026-11-24T04:55:00-03:00",
+  "nivel": "sin_novedades",
+  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. La Autopista Illia, Av. Cantilo y el Paseo del Bajo circulan con normalidad desde ayer a las 12, tras finalizar las obras del Anillo La Pampa.",
   "items": [
-    {"titulo": "Autopista Illia, Cantilo y Paseo del Bajo: corte total el lunes 23 de 0 a 12; desde las 12 circulación normal", "zona": "AU Illia sentido Provincia, Av. Cantilo y Paseo del Bajo sentido norte (Retiro – Palermo)", "tipo": "obra", "fuente": "Infobae", "url": "https://www.infobae.com/sociedad/2026/11/21/cerraran-la-autopista-illia-por-obras-durante-el-fin-de-semana-largo-cuando-sera-y-como-afectara-al-transito/"},
-    {"titulo": "Cortes y desvíos en AU Illia, Cantilo y Paseo del Bajo: cronograma completo y desvíos para camiones", "zona": "Paseo del Bajo, Illia, Cantilo, Costanera y Güiraldes", "tipo": "corte", "fuente": "Alertas Tránsito", "url": "https://www.alertastransito.com/2026/11/cortes-y-desvios-en-AU-Illia-Cantilo-y-Paseo-del-Bajo-Cronograma-completo.html"},
-    {"titulo": "Feriado del lunes 23 por el Día de la Soberanía: colectivos con frecuencia de domingo y trenes Sarmiento y Mitre limitados", "zona": "CABA y AMBA", "tipo": "corte", "fuente": "Perfil", "url": "https://www.perfil.com/noticias/amp/sociedad/transporte-publico-por-el-feriado-dos-lineas-de-trenes-estaran-limitadas-durante-el-fin-de-semana-largo-a50-jsm-aJESO6G43mEe.phtml"}
+    {"titulo": "AU Illia, Cantilo y Paseo del Bajo: terminaron los cortes por obras; circulación restablecida desde el lunes 23 a las 12", "zona": "AU Illia, Av. Cantilo y Paseo del Bajo (Retiro – Palermo)", "tipo": "obra", "fuente": "Alertas Tránsito", "url": "https://www.alertastransito.com/2026/11/cortes-y-desvios-en-AU-Illia-Cantilo-y-Paseo-del-Bajo-Cronograma-completo.html"}
   ]
 }

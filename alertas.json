@@ -1,9 +1,7 @@
 {
-  "fecha": "2026-11-24",
-  "actualizado": "2026-11-24T04:55:00-03:00",
+  "fecha": "2026-11-25",
+  "actualizado": "2026-11-25T04:50:00-03:00",
   "nivel": "sin_novedades",
-  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. La Autopista Illia, Av. Cantilo y el Paseo del Bajo circulan con normalidad desde ayer a las 12, tras finalizar las obras del Anillo La Pampa.",
-  "items": [
-    {"titulo": "AU Illia, Cantilo y Paseo del Bajo: terminaron los cortes por obras; circulación restablecida desde el lunes 23 a las 12", "zona": "AU Illia, Av. Cantilo y Paseo del Bajo (Retiro – Palermo)", "tipo": "obra", "fuente": "Alertas Tránsito", "url": "https://www.alertastransito.com/2026/11/cortes-y-desvios-en-AU-Illia-Cantilo-y-Paseo-del-Bajo-Cronograma-completo.html"}
-  ]
+  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. Por el 25N (Día contra la Violencia de Género) podría haber movilizaciones en el centro porteño más tarde; no se informaron horarios ni cortes para la franja de salida.",
+  "items": []
 }

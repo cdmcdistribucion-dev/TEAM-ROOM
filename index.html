@@ -620,11 +620,12 @@ function isPct(k){return isSafety(k)||[k.target,k.trigger].some(v=>num(v)&&v>0&&
 /* Safety: si objetivo/disparador vienen en puntos (ej. 3 = 3%) los valores se muestran tal cual con %; si vienen en fraccion (0,03) se multiplican por 100 */
 function pctPoints(k){if(!isSafety(k))return false;const vals=[k.target,k.trigger,k.daily,k.weekly,k.monthly,...(k.series||[]).map(p=>p.v)].filter(num);return vals.some(v=>Math.abs(v)>1)}
 function fmtV(k,v){if(!num(v))return '—';if(isPct(k)){const x=pctPoints(k)?v:v*100;return x.toLocaleString('es-AR',{maximumFractionDigits:1})+'%'}return v.toLocaleString('es-AR',{maximumFractionDigits:2})}
-function current(k){if(num(k.monthly))return{v:k.monthly,src:'MENSUAL'};if(num(k.weekly))return{v:k.weekly,src:k.week||'SEMANAL'};if(num(k.daily))return{v:k.daily,src:'DIARIO '+(k.dailyDate||'')};const s=(k.series||[]).filter(p=>num(p.v));if(s.length)return{v:s[s.length-1].v,src:'DIARIO '+s[s.length-1].d};return{v:null,src:''}}
+/* Estado del KPI = resultado del DIA: bajo objetivo -> 5 por que; bajo disparador -> ADF */
+function current(k){if(num(k.daily))return{v:k.daily,src:'DIARIO '+(k.dailyDate||'')};const s=(k.series||[]).filter(p=>num(p.v));if(s.length)return{v:s[s.length-1].v,src:'DIARIO '+s[s.length-1].d};return{v:null,src:''}}
 function limit(k){return num(k.trigger)?k.trigger:(num(k.target)?k.target:null)}
 function stv(k,c){if(!num(c)||(!num(k.target)&&!num(k.trigger)))return 'na';const low=lowerIsBetter(k);if(num(k.trigger)&&(low?c>k.trigger:c<k.trigger))return 'bad';if(num(k.target)&&(low?c>k.target:c<k.target))return 'warn';return 'ok'}
 function status(k){const c=current(k).v;if(!num(c)||(!num(k.target)&&!num(k.trigger)))return 'na';const low=lowerIsBetter(k);if(num(k.trigger)&&(low?c>k.trigger:c<k.trigger))return 'bad';if(num(k.target)&&(low?c>k.target:c<k.target))return 'warn';return 'ok'}
-function statusLabel(k,s){const low=lowerIsBetter(k);if(s==='warn')return low?'▲ SOBRE EL OBJETIVO':'▲ BAJO EL OBJETIVO';if(s==='bad')return low?'✕ SOBRE EL DISPARADOR':'✕ BAJO EL DISPARADOR';return STATUS[s]}
+function statusLabel(k,s){const low=lowerIsBetter(k);if(s==='warn')return low?'▲ HOY SOBRE EL OBJETIVO':'▲ HOY BAJO EL OBJETIVO';if(s==='bad')return low?'✕ HOY SOBRE EL DISPARADOR':'✕ HOY BAJO EL DISPARADOR';if(s==='ok')return '✓ HOY EN OBJETIVO';return '– SIN DATO DEL DÍA'}
 function shortOp(raw){const u=String(raw).toUpperCase();const f=OP_SHORT.find(([k])=>u.includes(k));return f?f[1]:String(raw)}
 function selectedOp(){try{const c=JSON.parse(localStorage.getItem('teamRoomConfig')||'{}');if(c.operator)return c.operator}catch(e){}return document.querySelector('#operators .active')?.textContent.trim()||''}
 function matchOp(raw,sel){if(!sel)return true;const u=String(raw).toUpperCase();return (OP_ALIAS[sel]||[sel]).some(x=>u.includes(x))}

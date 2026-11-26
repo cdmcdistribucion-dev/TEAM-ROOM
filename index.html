@@ -616,7 +616,8 @@ const DB={db:null,
 const num=v=>typeof v==='number'&&isFinite(v);
 function lowerIsBetter(k){const n=String(k.name||'');if(/exceso|cintur|ralent|detractor/i.test(n))return true;if(/adherencia|notificaci|refactur|checklist|no oks/i.test(n))return false;if(/^no |rechaz|indispon|demora/i.test(n))return true;if(num(k.trigger)&&num(k.target)&&k.trigger!==k.target)return k.trigger>k.target;return false}
 function isSafety(k){return /safety|seguridad/i.test(k.category||'')||/exceso|cintur/i.test(k.name||'')}
-function isPct(k){return isSafety(k)||[k.target,k.trigger].some(v=>num(v)&&v>0&&v<1)||(num(k.target)&&k.target===1)}
+function isCount(k){return /check\s*-?list|no\s*oks?\b/i.test(k.name||'')}
+function isPct(k){if(isCount(k))return false;return isSafety(k)||[k.target,k.trigger].some(v=>num(v)&&v>0&&v<1)||(num(k.target)&&k.target===1)}
 /* Safety: si objetivo/disparador vienen en puntos (ej. 3 = 3%) los valores se muestran tal cual con %; si vienen en fraccion (0,03) se multiplican por 100 */
 function pctPoints(k){if(!isSafety(k))return false;const vals=[k.target,k.trigger,k.daily,k.weekly,k.monthly,...(k.series||[]).map(p=>p.v)].filter(num);return vals.some(v=>Math.abs(v)>1)}
 function fmtV(k,v){if(!num(v))return '—';if(isPct(k)){const x=pctPoints(k)?v:v*100;return x.toLocaleString('es-AR',{maximumFractionDigits:1})+'%'}return v.toLocaleString('es-AR',{maximumFractionDigits:2})}
@@ -701,7 +702,7 @@ async function save(data,source){
  msg('ok','✓ '+(state.op?esc(shortOp(state.op))+' · '+esc(state.op):'Todos los operadores')+': '+mine.length+' indicadores actualizados ('+measured+' con dato) desde '+esc(source)+' · hoja '+esc(data.sheet)+'. Guardado en la base.');
 }
 function apply(snap){
- state.snap=snap;state.kpis=snap.kpis||[];
+ state.snap=snap;state.kpis=(snap.kpis||[]).map(k=>{if(!isCount(k))return k;const fx=v=>num(v)&&v>0&&v<1?Math.round(v*1000)/10:v;return{...k,target:fx(k.target),trigger:fx(k.trigger)}});
  if(window.__teamRoomKpi)window.__teamRoomKpi.set(state.kpis,'Consulta actualizada: '+new Date(snap.ts).toLocaleString('es-AR')+' · '+(snap.sheet||snap.month||''));
  render();
 }

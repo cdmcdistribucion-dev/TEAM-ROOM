@@ -434,6 +434,14 @@ a.history-btn:hover{text-decoration:none}
 .kb-wm div{background:#0b1424;border:1px solid var(--line);border-radius:9px;padding:7px 8px;text-align:center}
 .kb-wm small{display:block;color:var(--muted);font-size:10px;font-weight:900;letter-spacing:.06em}
 .kb-wm b{display:block;font-size:20px;color:var(--text);font-variant-numeric:tabular-nums;margin-top:2px}
+
+/* Alerta del dia: panel con barra de desplazamiento para ver todos los campos */
+.rutas-layout>.alert-panel{display:flex;flex-direction:column;min-height:0;height:100%;max-height:100%;overflow:hidden}
+.alert-panel>.card-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#16dcf7 #0b1424;padding-right:10px}
+.alert-panel>.card-body::-webkit-scrollbar{width:10px}
+.alert-panel>.card-body::-webkit-scrollbar-track{background:#0b1424;border-radius:8px}
+.alert-panel>.card-body::-webkit-scrollbar-thumb{background:#16dcf7;border-radius:8px;border:2px solid #0b1424}
+.alert-panel>.card-body>*{flex-shrink:0}
 </style>
 </head>
 <body>

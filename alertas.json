@@ -1,7 +1,11 @@
 {
-  "fecha": "2026-11-25",
-  "actualizado": "2026-11-25T04:50:00-03:00",
-  "nivel": "sin_novedades",
-  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. Por el 25N (Día contra la Violencia de Género) podría haber movilizaciones en el centro porteño más tarde; no se informaron horarios ni cortes para la franja de salida.",
-  "items": []
+  "fecha": "2026-11-26",
+  "actualizado": "2026-11-26T04:55:00-03:00",
+  "nivel": "medio",
+  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. Hoy a las 15 h la CGT se concentra frente a la Superintendencia de Servicios de Salud (Bartolomé Mitre al 400, microcentro): se esperan demoras en la zona por la tarde. En Caballito rigen desde ayer cambios de sentido por el TramBus (Honorio Pueyrredón, Acoyte, Felipe Vallese, Ambrosetti).",
+  "items": [
+    {"titulo": "La CGT se moviliza hoy a las 15 h a la Superintendencia de Servicios de Salud por la crisis de las obras sociales", "zona": "Microcentro - Bartolomé Mitre al 400 / Diagonal Norte", "tipo": "marcha", "fuente": "Ámbito", "url": "https://www.ambito.com/politica/la-cgt-marcha-la-situacion-critica-las-obras-sociales-y-exige-al-gobierno-una-respuesta-n6349384"},
+    {"titulo": "La CGT fijó una marcha para el jueves 26 a las 15 frente a la SSS y prepara un cese de actividades en diciembre", "zona": "Microcentro - Bartolomé Mitre al 400", "tipo": "marcha", "fuente": "El Argentino Diario", "url": "https://elargentinodiario.com.ar/politica/20/11/2026/la-cgt-fijo-una-marcha-y-prepara-un-cese-de-actividades-en-diciembre/"},
+    {"titulo": "Cambian de sentido varias calles de Caballito por la llegada del TramBus (Honorio Pueyrredón, Acoyte, Felipe Vallese, Ambrosetti)", "zona": "Caballito", "tipo": "obra", "fuente": "Canal 26", "url": "https://www.canal26.com/general/2026/11/25/desde-hoy-cambian-de-sentido-varias-calles-de-caballito-por-la-llegada-del-trambus-cuales-son-y-como-circular"}
+  ]
 }

@@ -635,21 +635,27 @@ function parseWorkbook(wb){
  const mName=MONTHS[new Date().getMonth()];
  const sheetName=wb.SheetNames.find(n=>n.trim().toUpperCase()===mName)||wb.SheetNames.find(n=>n.toUpperCase().includes(mName))||wb.SheetNames[wb.SheetNames.length-1];
  const rows=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{header:1,defval:''});
- const isDay=v=>v instanceof Date||/^\s*\d{1,2}[\/\-.]\d{1,2}([\/\-.]\d{2,4})?\s*$/.test(String(v));
+ const MES3=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+ const toDayMonth=v=>{if(v instanceof Date)return[v.getDate(),v.getMonth()];if(typeof v==='number'&&v>40000&&v<60000){const d=XLSX.SSF.parse_date_code(v);return d?[d.d,d.m-1]:null}const t=String(v).trim().toLowerCase();let m=t.match(/^(?:[a-záéíóú]+\.?\s+)?(\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.]\d{2,4})?$/);if(m)return[+m[1],+m[2]-1];m=t.match(/^(?:[a-záéíóú]+\.?\s+)?(\d{1,2})[\s\-\/.]*(?:de\s+)?([a-z]{3})[a-z]*\.?(?:[\s\-\/.]+\d{2,4})?$/);if(m&&MES3.indexOf(m[2].replace('set','sep'))>=0)return[+m[1],MES3.indexOf(m[2].replace('set','sep'))];return null};
+ const isDay=v=>!!toDayMonth(v);
  let hIdx=-1;for(let i=0;i<Math.min(rows.length,20);i++){const rr=rows[i]||[];if(rr.some(v=>/^(OBJETIVO|INDICADOR|GATILLO)$/i.test(String(v).trim()))){hIdx=i;break}}
  if(hIdx<0){let best=0;hIdx=3;for(let i=0;i<Math.min(rows.length,20);i++){const sc=(rows[i]||[]).filter(isDay).length;if(sc>best){best=sc;hIdx=i}}}
  const head=rows[hIdx]||[];
- const dkey=v=>{if(v instanceof Date)return v.getMonth()*100+v.getDate();const p=String(v).trim().split(/[\/\-.]/);return (+p[1]-1)*100+(+p[0])};
+ const dkey=v=>{const x=toDayMonth(v);return x[1]*100+x[0]};
  const dateCols=[];let lastKey=-1;head.forEach((v,j)=>{if(j>7&&isDay(v)){const k=dkey(v);if(k>lastKey){dateCols.push(j);lastKey=k}}});
- const dayLabel=v=>v instanceof Date?v.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}):String(v).trim().split(/[\/\-.]/).slice(0,2).map(x=>x.padStart(2,'0')).join('/');
+ const dayLabel=v=>{const x=toDayMonth(v);return x?String(x[0]).padStart(2,'0')+'/'+String(x[1]+1).padStart(2,'0'):String(v)};
  const weekCols=head.map((v,j)=>/^SEM/i.test(String(v).trim())?j:-1).filter(j=>j>=0);
  const monthCols=head.map((v,j)=>/^MTD$|MENSUAL|ACUMULADO|TOTAL MES/i.test(String(v).trim())?j:-1).filter(j=>j>=0);
  const weekDays=weekCols.map((w,k)=>{const prev=k?weekCols[k-1]:-1;return dateCols.filter(j=>j>prev&&j<w)});
+ /* Ultimo dia COMPLETO por operador: la ultima columna de fecha donde al menos la mitad de sus indicadores tienen dato */
+ const opRowsMap={};{let c='';for(let i=hIdx+1;i<rows.length;i++){const r=rows[i];if(!r)continue;if(r[0])c=String(r[0]).trim();if(!r[2]||!c)continue;(opRowsMap[c]=opRowsMap[c]||[]).push(r)}}
+ const opDayCol={};Object.entries(opRowsMap).forEach(([o,rs])=>{const need=Math.max(1,Math.ceil(rs.length/2));opDayCol[o]=[...dateCols].reverse().find(j=>rs.filter(r=>num(r[j])).length>=need)});
  const out=[];let cur='';
  for(let i=hIdx+1;i<rows.length;i++){const r=rows[i];if(!r)continue;if(r[0])cur=String(r[0]).trim();if(!r[2]||!cur)continue;
   const series=dateCols.map(j=>({d:dayLabel(head[j]),v:num(r[j])?r[j]:null}));
-  const lastD=[...series].reverse().find(p=>num(p.v));
-  let weekly=null,week='';const lastDayCol=[...dateCols].reverse().find(j=>num(r[j]));
+  const dayCol=opDayCol[cur]!==undefined?opDayCol[cur]:[...dateCols].reverse().find(j=>num(r[j]));
+  const lastD=dayCol!==undefined?{v:num(r[dayCol])?r[dayCol]:null,d:dayLabel(head[dayCol])}:null;
+  let weekly=null,week='';const lastDayCol=dayCol;
   if(lastDayCol!==undefined){const k=weekCols.findIndex((w,ix)=>weekDays[ix].includes(lastDayCol));if(k>=0&&num(r[weekCols[k]])){weekly=r[weekCols[k]];week=String(head[weekCols[k]]).trim()}else if(k>0){for(let x=k-1;x>=0;x--){if(num(r[weekCols[x]])){weekly=r[weekCols[x]];week=String(head[weekCols[x]]).trim();break}}}}
   else weekCols.forEach(j=>{if(num(r[j])){weekly=r[j];week=String(head[j]).trim()}});
   const mtdCol=monthCols.find(j=>num(r[j]));

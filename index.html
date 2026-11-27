@@ -623,6 +623,7 @@ const DB={db:null,
 /* ---------- Reglas de KPI ---------- */
 const num=v=>typeof v==='number'&&isFinite(v);
 function lowerIsBetter(k){const n=String(k.name||'');if(/exceso|cintur|ralent|detractor/i.test(n))return true;if(/adherencia|notificaci|refactur|checklist|no oks/i.test(n))return false;if(/^no |rechaz|indispon|demora/i.test(n))return true;if(num(k.trigger)&&num(k.target)&&k.trigger!==k.target)return k.trigger>k.target;return false}
+/* Los KPIs de seguridad (excesos de velocidad, no uso de cinturon) se excluyen de la seccion de indicadores */
 function isSafety(k){return /safety|seguridad/i.test(k.category||'')||/exceso|cintur/i.test(k.name||'')}
 function isCount(k){return /check\s*-?list|no\s*oks?\b/i.test(k.name||'')}
 function isPct(k){if(isCount(k))return false;return isSafety(k)||[k.target,k.trigger].some(v=>num(v)&&v>0&&v<1)||(num(k.target)&&k.target===1)}
@@ -710,7 +711,7 @@ async function save(data,source){
  msg('ok','✓ '+(state.op?esc(shortOp(state.op))+' · '+esc(state.op):'Todos los operadores')+': '+mine.length+' indicadores actualizados ('+measured+' con dato) desde '+esc(source)+' · hoja '+esc(data.sheet)+'. Guardado en la base.');
 }
 function apply(snap){
- state.snap=snap;state.kpis=(snap.kpis||[]).map(k=>{if(!isCount(k))return k;const fx=v=>num(v)&&v>0&&v<1?Math.round(v*1000)/10:v;return{...k,target:fx(k.target),trigger:fx(k.trigger)}});
+ state.snap=snap;state.kpis=(snap.kpis||[]).filter(k=>!isSafety(k)).map(k=>{if(!isCount(k))return k;const fx=v=>num(v)&&v>0&&v<1?Math.round(v*1000)/10:v;return{...k,target:fx(k.target),trigger:fx(k.trigger)}});
  if(window.__teamRoomKpi)window.__teamRoomKpi.set(state.kpis,'Consulta actualizada: '+new Date(snap.ts).toLocaleString('es-AR')+' · '+(snap.sheet||snap.month||''));
  render();
 }
@@ -803,8 +804,8 @@ window.KPIBoard={ingestFromLegacy:(kpis,label)=>save({kpis,sheet:label||'Archivo
  const st=$('kbDbStatus');{const c=selectedOp(),saved=localStorage.getItem('kbOperator');state.op=(c&&OPS.some(([,f])=>f===c))?c:(saved!==null?saved:'')}
  try{await DB.open();st.className='kb-db on';st.innerHTML='<i></i>BASE CONECTADA';state.history=await DB.all();
   if(state.history.length)apply(state.history[0]);
-  else{const seed=window.__teamRoomKpi?window.__teamRoomKpi.get():[];if(seed.length){state.kpis=seed;state.snap={ts:Date.now(),source:'Datos de ejemplo',sheet:'(sin actualizar)',kpis:seed}}render();msg('info','La base está vacía: presioná <b>ACTUALIZAR KPIs</b> para consultar el Excel y guardar la primera versión.')}
- }catch(e){st.className='kb-db err';st.innerHTML='<i></i>BASE NO DISPONIBLE';const seed=window.__teamRoomKpi?window.__teamRoomKpi.get():[];state.kpis=seed;render()}
+  else{const seed=window.__teamRoomKpi?window.__teamRoomKpi.get():[];if(seed.length){state.kpis=seed.filter(k=>!isSafety(k));state.snap={ts:Date.now(),source:'Datos de ejemplo',sheet:'(sin actualizar)',kpis:seed}}render();msg('info','La base está vacía: presioná <b>ACTUALIZAR KPIs</b> para consultar el Excel y guardar la primera versión.')}
+ }catch(e){st.className='kb-db err';st.innerHTML='<i></i>BASE NO DISPONIBLE';const seed=window.__teamRoomKpi?window.__teamRoomKpi.get():[];state.kpis=seed.filter(k=>!isSafety(k));render()}
 })();
 })();
 </script>

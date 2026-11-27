@@ -1,11 +1,11 @@
 {
-  "fecha": "2026-11-26",
-  "actualizado": "2026-11-26T04:55:00-03:00",
+  "fecha": "2026-11-27",
+  "actualizado": "2026-11-27T04:48:00-03:00",
   "nivel": "medio",
-  "resumen": "Sin cortes ni accidentes relevantes informados en CABA para esta mañana. Hoy a las 15 h la CGT se concentra frente a la Superintendencia de Servicios de Salud (Bartolomé Mitre al 400, microcentro): se esperan demoras en la zona por la tarde. En Caballito rigen desde ayer cambios de sentido por el TramBus (Honorio Pueyrredón, Acoyte, Felipe Vallese, Ambrosetti).",
+  "resumen": "Sin accidentes ni marchas relevantes informados en CABA para esta mañana; hoy es día hábil normal y no hay alerta por tormentas para el AMBA. Desde las 9 h hay corte total de Av. De los Italianos (entre Manuela Sáenz y Marta Lynch, Puerto Madero) hasta el domingo, y esta noche desde las 23:30 cierra la Autopista Lugones entre Udaondo y Ombúes hasta las 8 h del sábado (desvío por Av. del Libertador).",
   "items": [
-    {"titulo": "La CGT se moviliza hoy a las 15 h a la Superintendencia de Servicios de Salud por la crisis de las obras sociales", "zona": "Microcentro - Bartolomé Mitre al 400 / Diagonal Norte", "tipo": "marcha", "fuente": "Ámbito", "url": "https://www.ambito.com/politica/la-cgt-marcha-la-situacion-critica-las-obras-sociales-y-exige-al-gobierno-una-respuesta-n6349384"},
-    {"titulo": "La CGT fijó una marcha para el jueves 26 a las 15 frente a la SSS y prepara un cese de actividades en diciembre", "zona": "Microcentro - Bartolomé Mitre al 400", "tipo": "marcha", "fuente": "El Argentino Diario", "url": "https://elargentinodiario.com.ar/politica/20/11/2026/la-cgt-fijo-una-marcha-y-prepara-un-cese-de-actividades-en-diciembre/"},
-    {"titulo": "Cambian de sentido varias calles de Caballito por la llegada del TramBus (Honorio Pueyrredón, Acoyte, Felipe Vallese, Ambrosetti)", "zona": "Caballito", "tipo": "obra", "fuente": "Canal 26", "url": "https://www.canal26.com/general/2026/11/25/desde-hoy-cambian-de-sentido-varias-calles-de-caballito-por-la-llegada-del-trambus-cuales-son-y-como-circular"}
+    {"titulo": "Corte total de Av. De los Italianos desde las 9 h del viernes hasta el domingo a las 4 h por la carrera 10K Nocturna", "zona": "Puerto Madero - Av. De los Italianos entre Manuela Sáenz y Marta Lynch", "tipo": "corte", "fuente": "Pura Ciudad", "url": "https://www.puraciudad.com.ar/habra-cortes-de-transito-en-la-ciudad-por-dos-carreras-en-puerto-madero-palermo-y-cerca-de-ciudad-universitaria/"},
+    {"titulo": "Cierran la Autopista Lugones entre Udaondo y Ombúes desde las 23:30 del viernes hasta las 8 h del sábado (y nuevos cortes el fin de semana)", "zona": "Autopista Lugones - Udaondo a Ombúes / Puente Labruna", "tipo": "obra", "fuente": "Infobae", "url": "https://www.infobae.com/sociedad/2026/11/26/cerraran-la-autopista-lugones-durante-el-fin-de-semana-cuando-se-realizaran-los-cortes/"},
+    {"titulo": "Cortes en Lugones y Dellepiane: la Dellepiane cierra el sábado de 7 a 20 h entre AU 25 de Mayo y Piedra Buena", "zona": "Autopista Dellepiane", "tipo": "obra", "fuente": "Ámbito", "url": "https://ambito.com/informacion-general/cortes-lugones-y-dellepiane-como-seran-las-restricciones-el-fin-semana-n6349855"}
   ]
 }

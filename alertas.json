@@ -1,11 +1,11 @@
 {
-  "fecha": "2026-11-27",
-  "actualizado": "2026-11-27T04:48:00-03:00",
-  "nivel": "medio",
-  "resumen": "Sin accidentes ni marchas relevantes informados en CABA para esta mañana; hoy es día hábil normal y no hay alerta por tormentas para el AMBA. Desde las 9 h hay corte total de Av. De los Italianos (entre Manuela Sáenz y Marta Lynch, Puerto Madero) hasta el domingo, y esta noche desde las 23:30 cierra la Autopista Lugones entre Udaondo y Ombúes hasta las 8 h del sábado (desvío por Av. del Libertador).",
+  "fecha": "2026-11-28",
+  "actualizado": "2026-11-28T04:48:00-03:00",
+  "nivel": "alto",
+  "resumen": "Autopista Lugones cerrada entre Udaondo y Ombúes hasta las 8 h (después, solo 2 carriles izquierdos a la altura de La Pampa; desvío por Av. del Libertador) y Autopista Dellepiane cortada en ambos sentidos desde las 7 h entre AU 25 de Mayo y Piedra Buena/Lacarra (desvío por Perito Moreno o colectora Sur). Sigue el corte total de Av. De los Italianos en Puerto Madero; sin accidentes ni marchas relevantes informados para esta mañana.",
   "items": [
-    {"titulo": "Corte total de Av. De los Italianos desde las 9 h del viernes hasta el domingo a las 4 h por la carrera 10K Nocturna", "zona": "Puerto Madero - Av. De los Italianos entre Manuela Sáenz y Marta Lynch", "tipo": "corte", "fuente": "Pura Ciudad", "url": "https://www.puraciudad.com.ar/habra-cortes-de-transito-en-la-ciudad-por-dos-carreras-en-puerto-madero-palermo-y-cerca-de-ciudad-universitaria/"},
-    {"titulo": "Cierran la Autopista Lugones entre Udaondo y Ombúes desde las 23:30 del viernes hasta las 8 h del sábado (y nuevos cortes el fin de semana)", "zona": "Autopista Lugones - Udaondo a Ombúes / Puente Labruna", "tipo": "obra", "fuente": "Infobae", "url": "https://www.infobae.com/sociedad/2026/11/26/cerraran-la-autopista-lugones-durante-el-fin-de-semana-cuando-se-realizaran-los-cortes/"},
-    {"titulo": "Cortes en Lugones y Dellepiane: la Dellepiane cierra el sábado de 7 a 20 h entre AU 25 de Mayo y Piedra Buena", "zona": "Autopista Dellepiane", "tipo": "obra", "fuente": "Ámbito", "url": "https://ambito.com/informacion-general/cortes-lugones-y-dellepiane-como-seran-las-restricciones-el-fin-semana-n6349855"}
+    {"titulo": "Dellepiane cortada en ambos sentidos desde las 7 h del sábado hasta las 7 h del domingo por obras de pasarelas (desvío por AU Perito Moreno o colectora Sur)", "zona": "Autopista Dellepiane - entre AU 25 de Mayo y Av. Piedra Buena / Lacarra", "tipo": "obra", "fuente": "El Bonaerense", "url": "https://www.elbonaerense.news/2026/11/27/cortes-en-lugones-y-dellepiane-horarios-y-desvios-del-fin-de-semana"},
+    {"titulo": "Autopista Lugones cerrada hasta las 8 h; de 8 a 16 h solo dos carriles izquierdos habilitados a la altura de La Pampa", "zona": "Autopista Lugones - Udaondo a Ombúes (desvío por Av. del Libertador)", "tipo": "obra", "fuente": "Portal Ciudad", "url": "https://portalciudad.com.ar/cortes-y-desvios-en-las-autopistas-lugones-y-dellepiane-como-sera-el-transito-durante-el-fin-de-semana/"},
+    {"titulo": "Corte total de Av. De los Italianos hasta el domingo a las 4 h y cortes sucesivos de 18:30 a 22:30 por la carrera 10K Nocturna", "zona": "Puerto Madero / Costanera Sur - Av. De los Italianos entre Manuela Sáenz y Marta Lynch", "tipo": "corte", "fuente": "Gobierno de la Ciudad de Buenos Aires", "url": "https://buenosaires.gob.ar/noticias/cortes-por-evento-deportivo-este-sabado-28-de-noviembre"}
   ]
 }
